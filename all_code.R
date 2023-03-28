@@ -361,7 +361,7 @@ ggdraw() +
   draw_plot_label(label = c("A","B","C",'D','E','F','G'), size = 22,
                   x = c(0.05,0.3,0.55,.8,0.05,.3,.55), y = c(0.9,0.9,0.9,0.9,0.4,0.4,0.4))
 dev.off()
-########bkmr
+############################################贝叶斯核机器回归bkmr
 YH <- log(hea$HF+12)
 YL <- log(hea$LF+11)
 expo <-as.matrix(scale(log(hea[,3:9])))
@@ -771,7 +771,7 @@ Ptot4 <- ggplot(pred.resp.univar, aes(z, est, ymin = est - 1.96*se, ymax = est +
   ylab("h(z)")+xlab('')+theme(axis.title.y=element_text(size=20,
                                                         color = "black"))
 ####
-jpeg(file='图.jpg',width=15000,height=8500,res=600)
+jpeg(file='图9.jpg',width=15000,height=8500,res=600)
 ggdraw() +
   draw_plot(Ptot1, x = 0, y = .5, width = .35, height = .48) +
   draw_plot(Ptot2, x = 0, y = .0, width = .35, height = .48) +
@@ -1230,7 +1230,7 @@ ggdraw( xlim = c(0, 1.2)) +
 dev.off()
 
 #########
-#########
+#########中介效应模型
 library(mediation)
 all$OHQ845 <- as.numeric(all$OHQ845)
 all <- mutate(all,OHQ845=ifelse(OHQ845==1,0,1))
