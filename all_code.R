@@ -453,9 +453,9 @@ data <- scale(log(data))
 #################
 par(mfrow=c(1,2))
 fviz_nbclust(data, cluster::pam, method = "gap_stat",k.max = 10) +
-  geom_vline(xintercept = 4, linetype = 2)######图6左
+  geom_vline(xintercept = 4, linetype = 2)######图6A
 fviz_nbclust(data, cluster::pam, method = "wss",k.max = 10) +
-  geom_vline(xintercept = 4, linetype = 2)#####图6右
+  geom_vline(xintercept = 4, linetype = 2)#####图6B
 ########
 cl <- pam(data,k=4)
 cluster <- cl[["clustering"]]
@@ -563,7 +563,7 @@ tab2 <- as.data.frame(print(table_clustern, showAllLevels = TRUE))
 
 clustertab <- creat_newtab(tab1 = tab2,tab_isn = tab1)
 clustertab[29,] <- tab1[29,]
-write.csv(clustertab,'表4.csv')
+write.csv(clustertab,'聚类人口学特征.csv')
 ########################敏感性分析
 all <- left_join(EPH,DEMO,by='SEQN')%>% left_join(.,BPQ,by='SEQN') %>% left_join(.,DIQ,by='SEQN') %>% left_join(.,MCQ,by='SEQN') %>% 
   left_join(.,RXQ,by='SEQN') %>% left_join(.,SMQ,by='SEQN') %>% left_join(.,BMX,by='SEQN') %>% 
@@ -589,14 +589,6 @@ fac <- c('race','Age.Group','education','RIDRETH1','DMDEDUC2','Gender','medicine
 all[,fac] <- lapply(all[,fac], factor)
 ##############
 hea<- filter(all,RIDAGEYR>=45) %>% na.omit(.)
-all <- mutate(all,URX14Dgr=ntile(URX14D,4),
-              URXDCBgr=ntile(URXDCB,4),
-              URXBPHgr=ntile(URXBPH,4),
-              URXBP3gr=ntile(URXBP3,4),
-              URXTRSgr=ntile(URXTRS,4),
-              URXMPBgr=ntile(URXMPB,4),
-              URXPPBgr=ntile(URXPPB,4))
-all[,ar] <- lapply(all[,ar],factor)
 heamodel <- mutate(all,inAnalysis= SEQN%in%hea$SEQN)
 heaM <- svydesign(data=heamodel, id=~SDMVPSU, strata=~SDMVSTRA, weights=~WTMEC12YR, nest=TRUE)
 heamod <- subset(heaM, inAnalysis)
@@ -725,13 +717,13 @@ all_rcs_results_un <- lapply(mian_test,function(x) glp(a=logaa,ma=x,coa = coa,
                                                        design =heamod))
 names(all_rcs_results_un) <- mian_test
 ########
-##???ݴ???
+##
 YH <- log(hea$HF+12)
 YL <- log(hea$LF+11)
 expo <-as.matrix(scale(log(hea[,3:9])))
 set.seed(123)
 cora <- sapply(hea[,c('RIDAGEYR','PIR','Gender','race','URXUCR','medicine','BMXBMI','smoke','BPQ020','DIQ010','stroke','HartF')],as.numeric)
-#####??ģ
+#####
 ###
 fitkmH3 <- kmbayes(YH,Z=expo,X=cora,iter = 20000,varsel = T,groups = c(1,1,2,3,4,5,5))
 PIPHF3 <- ExtractPIPs(fitkmH3)
@@ -1231,7 +1223,7 @@ dev.off()
 
 #########
 #########中介效应模型
-library(mediation)
+if(!require('mediation')) install.packages("mediation")
 all$OHQ845 <- as.numeric(all$OHQ845)
 all <- mutate(all,OHQ845=ifelse(OHQ845==1,0,1))
 hea<- filter(all,RIDAGEYR>=45)%>% na.omit(.)
